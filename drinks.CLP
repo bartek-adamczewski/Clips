@@ -57,6 +57,8 @@
 (defrule answer_bubbly ""
     (logical (or
     (celeb Yes)
+    (likePerson Yes)
+    (longTime Yes)
     ))
     =>
     (assert (UI-state (display bubblyAnswer)
@@ -82,9 +84,13 @@
 
 (defrule answer_wine  ""
     (logical (or
+    (truth Yes)
     (talk_b No)
     (sleep No)
     (help Yes)
+    (after No)
+    (marmon No)
+    (wasted No)
     ))
     =>
     (assert (UI-state (display wineAnswer)
@@ -96,6 +102,7 @@
     (logical (or
     (talk_b Yes)
     (sleep Yes)
+    (marmon Yes)
     ))
     =>
     (assert (UI-state (display nonAlcoholicAnswer)
@@ -155,8 +162,12 @@
 
 (defrule answer_martini  ""
     (logical (or
+    (after Yes)
     (sure No)
     (fired Yes)
+    (cry Yes)
+    (friday Yes)
+    (longTime No)
     ))
     =>
     (assert (UI-state (display martiniAnswer)
@@ -166,7 +177,12 @@
 
 (defrule answer_fancy_cocktail  ""
     (logical (or
+    (bigAccount No)
     (sure Yes)
+    (cry No)
+    (girls Yes)
+    (keep No)
+    (likePeople No)
     ))
     =>
     (assert (UI-state (display fancyCoctailAnswer)
@@ -220,6 +236,8 @@
 (defrule answer_highball  ""
     (logical (or
     (bitchfest No)
+    (keep Yes)
+    (major No)
     ))
     =>
     (assert (UI-state (display highballAnswer)
@@ -230,9 +248,243 @@
 (defrule answer_beer  ""
     (logical (or
     (bitchfest Yes)
+    (workDrink No)
+    (girls No)
+    (writeOff No)
     ))
     =>
     (assert (UI-state (display beerAnswer)
                       (relation-asserted beer)
                       (state final)))
+)
+
+(defrule invite ""
+    (logical (why whyAsnwer2))
+    =>
+    (assert (UI-state (display inviteQuestion_12)
+                      (relation-asserted invited)
+                      (valid-answers Yes No)))
+)
+
+(defrule warning ""
+    (logical (invited No))
+    =>
+    (assert (UI-state (display performanceQuestion_14)
+                      (relation-asserted warned)
+                      (valid-answers Yes No)))
+)
+
+(defrule answer_lowball  ""
+    (logical (or
+    (warned No)
+    (male Yes)
+    (writeOff Yes)
+    ))
+    =>
+    (assert (UI-state (display lowballAnswe)
+                      (relation-asserted lowball)
+                      (state final)))
+)
+
+(defrule crier ""
+    (logical (or
+    (warned Yes)
+    (truth No)
+    ))
+    =>
+    (assert (UI-state (display crierQuestion_15)
+                      (relation-asserted cry)
+                      (valid-answers Yes No)))
+)
+
+(defrule handle_truth ""
+    (logical (invited Yes))
+    =>
+    (assert (UI-state (display truthQuestion_13)
+                      (relation-asserted truth)
+                      (valid-answers Yes No)))
+)
+
+(defrule work_drink ""
+    (logical (why whyAsnwer3))
+    =>
+    (assert (UI-state (display workDrinksQuestion_20)
+                      (relation-asserted workDrink)
+                      (valid-answers Yes No)))
+)
+
+(defrule is_male ""
+    (logical (workDrink Yes))
+    =>
+    (assert (UI-state (display maleQuestion_21)
+                      (relation-asserted male)
+                      (valid-answers Yes No)))
+)
+
+(defrule girls_night ""
+    (logical (male No))
+    =>
+    (assert (UI-state (display girlsNightQuestion_22)
+                      (relation-asserted girls)
+                      (valid-answers Yes No)))
+)
+
+(defrule closing_deal ""
+    (logical (start_q startinganswer4))
+    =>
+    (assert (UI-state (display closeQestion_23)
+                      (relation-asserted closingDeal)
+                      (valid-answers Yes No)))
+)
+
+(defrule big_account ""
+    (logical (closingDeal Yes))
+    =>
+    (assert (UI-state (display expenseQuestion_24)
+                      (relation-asserted bigAccount)
+                      (valid-answers Yes No)))
+)
+
+(defrule dinner_after ""
+    (logical (bigAccount Yes))
+    =>
+    (assert (UI-state (display afterQuestion_25)
+                      (relation-asserted after)
+                      (valid-answers Yes No)))
+)
+
+(defrule stay_under_radar ""
+    (logical (or
+    (closingDeal No)
+    (likePerson No)
+    ))
+    =>
+    (assert (UI-state (display schmoozingQuestion_26)
+                      (relation-asserted schmoozing)
+                      (valid-answers Yes No)))
+)
+
+(defrule big_drinker ""
+    (logical (schmoozing Yes))
+    =>
+    (assert (UI-state (display drinkerQuestion_28)
+                      (relation-asserted drinker)
+                      (valid-answers Yes No)))
+)
+
+(defrule keep_up ""
+    (logical (drinker Yes))
+    =>
+    (assert (UI-state (display obligatedQuestion_30)
+                      (relation-asserted keep)
+                      (valid-answers Yes No)))
+)
+
+(defrule they_marmon ""
+    (logical (drinker No))
+    =>
+    (assert (UI-state (display marmonQuestion_29)
+                      (relation-asserted marmon)
+                      (valid-answers Yes No)))
+)
+
+(defrule have_life ""
+    (logical (schmoozing No))
+    =>
+    (assert (UI-state (display lifeQuestion_27)
+                      (relation-asserted life)
+                      (valid-answers Yes No)))
+)
+
+(defrule not_honest ""
+    (logical (life Yes))
+    =>
+    (assert (UI-state (display notHonest)
+                      (relation-asserted life2)))
+)
+
+(defrule no_life ""
+    (logical (or
+    (life2)
+    (life No)
+    ))
+    =>
+    (assert (UI-state (display stopLife)
+                      (state final)))
+)
+
+(defrule official_function ""
+    (logical (start_q startinganswer3))
+    =>
+    (assert (UI-state (display functionQuestion_31)
+                      (relation-asserted official)
+                      (valid-answers Yes No)))
+)
+
+
+(defrule like_people ""
+    (logical (official No))
+    =>
+    (assert (UI-state (display likeGroupQuestion_32)
+                      (relation-asserted likePeople)
+                      (valid-answers Eh No)))
+)
+
+(defrule write_off ""
+    (logical (likePeople Eh))
+    =>
+    (assert (UI-state (display writeOffQuestion_33)
+                      (relation-asserted writeOff)
+                      (valid-answers Yes No)))
+)
+
+(defrule it_is ""
+    (logical (official Yes))
+    =>
+    (assert (UI-state (display itIsQuestion_34)
+                      (relation-asserted itIs)
+                      (valid-answers itIsanswer1 itIsanswer2 itIsanswer3)))
+)
+
+(defrule like_person ""
+    (logical (itIs itIsanswer3))
+    =>
+    (assert (UI-state (display likePersonQuestion_35)
+                      (relation-asserted likePerson)
+                      (valid-answers Yes No)))
+)
+
+(defrule major_celebration ""
+    (logical (itIs itIsanswer1))
+    =>
+    (assert (UI-state (display majorQuestion_36)
+                      (relation-asserted major)
+                      (valid-answers Yes No)))
+)
+
+(defrule get_wasted ""
+    (logical (or
+    (major Yes)
+    (itIs itIsanswer2)
+    ))
+    =>
+    (assert (UI-state (display wastedQuestion_37)
+                      (relation-asserted wasted)
+                      (valid-answers Yes No)))
+)
+
+(defrule friday_night ""
+    (logical (wasted Yes))
+    =>
+    (assert (UI-state (display fridayQuestion_38)
+                      (relation-asserted friday)
+                      (valid-answers Yes No)))
+)
+
+(defrule working_long_time ""
+    (logical (friday No))
+    =>
+    (assert (UI-state (display longTimeQuestion_39)
+                      (relation-asserted longTime)
+                      (valid-answers Yes No)))
 )

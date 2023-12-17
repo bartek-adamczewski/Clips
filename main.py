@@ -1,6 +1,8 @@
 from tkinter import *
 from tkinter import ttk
 import clips
+#TODO
+# nicer ui?
 
 def readResources(resourceList):
     with open('./src/resources/DrinkResources.properties', 'r') as file:
@@ -12,16 +14,12 @@ def readResources(resourceList):
 def getID():
     evalStr = '(find-all-facts ((?f state-list)) TRUE)'
     currentID = str(environment.eval(evalStr)[0]['current'])
-    print(currentID)
     return currentID
 
 def getUIstate():
     currentID = getID()
     evalStr = '(find-all-facts ((?f UI-state)) ' + '(eq ?f:id ' + currentID + '))'
-    print(evalStr)
-    print(evalStr[0])
-    UIstate = environment.eval(evalStr)
-    print(UIstate)
+    UIstate = environment.eval(evalStr)[0]
     return UIstate
 
 
@@ -34,7 +32,7 @@ def updateQuestions(start=False):
 
     for id, text in enumerate(allButtonText):
         if id + 1 <= answersSize:
-            text.set(resources(str(validAnswers[id])))
+            text.set(resources[str(validAnswers[id])])
             if not start:
                 allButtons[id].grid(row=id + 1, column=answersSize)
                 answerButtons += 1
@@ -53,7 +51,7 @@ def updateQuestions(start=False):
         nextText.set('Next')
         previousText.set('Previous')
 
-    titleText.set(resources(UIstate['display']))
+    titleText.set(resources[UIstate['display']])
 
     if not start:
         if state == 'final':
@@ -68,10 +66,6 @@ def updateQuestions(start=False):
         previousButton.grid(row=answersSize + 3, column=0)
         nextButton.grid(row=answersSize + 3, column=1)
 
-
-
-
-
 def handlePrevious():
     UIstate = getUIstate()
     state = str(UIstate['state'])
@@ -84,12 +78,15 @@ def handlePrevious():
     updateQuestions()
 
 def handleNext():
+    print('clicked on next!')
     UIstate = getUIstate()
     state = str(UIstate['state'])
     id = getID()
     validAnswers = UIstate['valid-answers']
-    radioID = selectedOption
-    answer = validAnswers[radioID]
+    if state != 'initial':
+        print('not initial state, setting vals')
+        radioID = int(selectedOption.get())
+        answer = validAnswers[radioID]
 
     if state == 'final':
         environment.reset()
@@ -97,9 +94,11 @@ def handleNext():
         updateQuestions()
         return
     elif state == 'initial':
+        print('this is the initial state')
         environment._facts.assert_string('(next ' + id + ')')
         environment._agenda.run()
     else:
+        print('not initial, going to next')
         environment._facts.assert_string('(next ' + id + ' ' + answer + ')')
         environment._agenda.run()
 
@@ -118,7 +117,6 @@ root.title('What should I drink?')
 root.geometry('800x500')
 frm = ttk.Frame(root, padding=15)
 frm.grid()
-#ttk.Label(frm, text="What should I drink?").grid(row=0)
 
 titleText = StringVar()
 answer1Text = StringVar()
@@ -134,14 +132,20 @@ updateQuestions(start=True)
 
 selectedOption = StringVar()
 
-titleLabel = Label(root, textvariable=titleText).grid()
-answer1 = RadioButton(root, textvariable=answer1Text, variable=selectedOption, value=str(0))
-answer2 = RadioButton(root, textvariable=answer2Text, variable=selectedOption, value=str(1))
-answer3 = RadioButton(root, textvariable=answer3Text, variable=selectedOption, value=str(2))
-answer4 = RadioButton(root, textvariable=answer4Text, variable=selectedOption, value=str(3))
-previousButton = Button(root, textvariable=previousText, command=handlePrevious()).grid()
-nextButton = Button(root, textvariable=nextText, command=handleNext()).grid()
-
+titleLabel = Label(root, textvariable=titleText)
+answer1 = Radiobutton(root, textvariable=answer1Text, variable=selectedOption, value=str(0))
+answer2 = Radiobutton(root, textvariable=answer2Text, variable=selectedOption, value=str(1))
+answer3 = Radiobutton(root, textvariable=answer3Text, variable=selectedOption, value=str(2))
+answer4 = Radiobutton(root, textvariable=answer4Text, variable=selectedOption, value=str(3))
 allButtons = (answer1, answer2, answer3, answer4)
+
+titleLabel.grid()
+
+previousButton = Button(root, textvariable=previousText)
+nextButton = Button(root, textvariable=nextText)
+previousButton.configure(command=handlePrevious)
+nextButton.configure(command=handleNext)
+previousButton.grid()
+nextButton.grid()
 
 root.mainloop()

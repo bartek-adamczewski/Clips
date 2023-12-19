@@ -403,12 +403,13 @@
     (logical (life Yes))
     =>
     (assert (UI-state (display notHonest)
-                      (relation-asserted life2)))
+                      (relation-asserted life2)
+                      (valid-answers Yes)))
 )
 
 (defrule no_life ""
     (logical (or
-    (life2)
+    (life2 Yes)
     (life No)
     ))
     =>

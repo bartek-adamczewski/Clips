@@ -195,11 +195,11 @@
     =>
     (assert (UI-state (display whyQuestion_11)
                       (relation-asserted why)
-                      (valid-answers whyAsnwer1 whyAsnwer2 whyAsnwer3)))
+                      (valid-answers whyAnswer1 whyAnswer2 whyAnswer3)))
 )
 
 (defrule fired_q ""
-    (logical (why whyAsnwer1))
+    (logical (why whyAnswer1))
     =>
     (assert (UI-state (display firedQuestion_16)
                       (relation-asserted fired)
@@ -259,7 +259,7 @@
 )
 
 (defrule invite ""
-    (logical (why whyAsnwer2))
+    (logical (why whyAnswer2))
     =>
     (assert (UI-state (display inviteQuestion_12)
                       (relation-asserted invited)
@@ -281,7 +281,7 @@
     (writeOff Yes)
     ))
     =>
-    (assert (UI-state (display lowballAnswe)
+    (assert (UI-state (display lowballAnswer)
                       (relation-asserted lowball)
                       (state final)))
 )
@@ -306,7 +306,7 @@
 )
 
 (defrule work_drink ""
-    (logical (why whyAsnwer3))
+    (logical (why whyAnswer3))
     =>
     (assert (UI-state (display workDrinksQuestion_20)
                       (relation-asserted workDrink)

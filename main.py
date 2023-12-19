@@ -33,11 +33,13 @@ def updateQuestions(start=False):
             text.set(resources[str(validAnswers[id])])
             if not start:
                 allButtons[id].grid(row=id + 1, column=1, pady=10)
+                allButtons[id].deselect()
                 answerButtons += 1
         else:
             text.set('')
             if not start:
                 allButtons[id].grid_remove()
+
 
     state = str(UIstate['state'])
 
@@ -45,7 +47,9 @@ def updateQuestions(start=False):
         nextText.set('Start')
     elif state == 'final':
         nextText.set('Restart')
+        previousButton.grid_forget()
     else:
+        selectedOption.set('0')
         nextText.set('Next')
         previousText.set('Previous')
 
@@ -77,14 +81,14 @@ def handleNext():
     state = str(UIstate['state'])
     id = getID()
     validAnswers = UIstate['valid-answers']
-    if state != 'initial':
+    if state != 'initial' and state != 'final':
         radioID = int(selectedOption.get())
         answer = validAnswers[radioID]
 
     if state == 'final':
         environment.reset()
         environment._agenda.run()
-        updateQuestions()
+        updateQuestions(start=True)
         return
     elif state == 'initial':
         environment._facts.assert_string('(next ' + id + ')')

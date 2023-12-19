@@ -145,7 +145,10 @@
 )
 
 (defrule sleep_with_you ""
-    (logical (seduce No))
+    (logical (or
+    (seduce No)
+    (worry No)
+    ))
     =>
     (assert (UI-state (display sleepingQuestion_9)
                       (relation-asserted sleep)
